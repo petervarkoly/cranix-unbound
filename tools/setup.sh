@@ -39,6 +39,17 @@ echo 'function FindProxyForURL(url, host)
 }
 ' > /srv/www/admin/proxy.pac
 
+#Remove wpad-curl from dhcp config
+sed -i /wpad-curl/d /etc/dhcpd.conf
+sed -i /wpad-curl/d /usr/share/cranix/templates//dhcpd.conf
+/usr/bin/systemctl try-restart dhcpd
+
+#Set the proxy ip as forwarder in samba
+sed -i "s/dns forwarder.*/dns forwarder = ${CRANIX_MAILSERVER}/" /etc/samba/smb.conf
+
 #Enable and start unbound
 /usr/bin/systemctl enable unbound
 /usr/bin/systemctl start  unbound
+
+#Restart samba
+/usr/bin/systemctl restart samba-ad
