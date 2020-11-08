@@ -24,6 +24,21 @@ sed -i s/CRANIX_FORWARDER/${CRANIX_FORWARDER}/ /etc/unbound/conf.d/cranix.conf
 #Create unbound initial blacklist
 /usr/share/cranix/tools/unbound/create_unbound_redirects.sh
 
+#Open all rooms for direct internet access
+/usr/share/cranix/tools/unbound/open_rooms.sh
+
+#Adapt wpad.dat and proxy pack file to use direkt internet for all rooms
+echo 'function FindProxyForURL(url, host)
+{
+	return "DIRECT";
+}
+' > /srv/www/admin/wpad.dat
+echo 'function FindProxyForURL(url, host)
+{
+	return "DIRECT";
+}
+' > /srv/www/admin/proxy.pac
+
 #Enable and start unbound
 /usr/bin/systemctl enable unbound
 /usr/bin/systemctl start  unbound
