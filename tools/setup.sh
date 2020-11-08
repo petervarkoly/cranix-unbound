@@ -16,6 +16,7 @@ fi
 #Create unbound configuration
 sed    s/CRANIX_NETWORK/${CRANIX_NETWORK}/ /usr/share/cranix/templates/unbound/cranix.conf > /etc/unbound/conf.d/cranix.conf
 sed -i s/CRANIX_NETMASK/${CRANIX_NETMASK}/ /etc/unbound/conf.d/cranix.conf
+sed -i s/CRANIX_PROXY/${CRANIX_PROXY}/     /etc/unbound/conf.d/cranix.conf
 sed -i s/CRANIX_FORWARDER/${CRANIX_FORWARDER}/ /etc/unbound/conf.d/cranix.conf
 
 #Enhance cranix configuration
@@ -45,7 +46,7 @@ sed -i /wpad-curl/d /usr/share/cranix/templates//dhcpd.conf
 /usr/bin/systemctl try-restart dhcpd
 
 #Set the proxy ip as forwarder in samba
-sed -i "s/dns forwarder.*/dns forwarder = ${CRANIX_MAILSERVER}/" /etc/samba/smb.conf
+sed -i "s/dns forwarder.*/dns forwarder = ${CRANIX_PROXY}/" /etc/samba/smb.conf
 
 #Enable and start unbound
 /usr/bin/systemctl enable unbound
