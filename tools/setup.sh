@@ -3,7 +3,7 @@
 
 if [ ! -e /etc/sysconfig/cranix ]; then
 	echo "It is not a CRANIX server"
-	exit 1
+	exit 0
 fi
 . /etc/sysconfig/cranix
 if [ -z "${CRANIX_FORWARDER}" ]; then
@@ -11,7 +11,7 @@ if [ -z "${CRANIX_FORWARDER}" ]; then
 fi
 if [ -z "${CRANIX_FORWARDER}" ]; then
 	echo "Can not evaluate an valid forwarder"
-	exit 2
+	exit 0
 fi
 #Create unbound configuration
 sed    s/CRANIX_NETWORK/${CRANIX_NETWORK}/ /usr/share/cranix/templates/unbound/cranix.conf > /etc/unbound/conf.d/cranix.conf
