@@ -26,4 +26,9 @@ do
              echo "local-data: \"$i A $CRANIX_PROXY\"" >> /etc/unbound/local.d/bad.conf;
          fi
 done
+for i in $( cat /usr/share/cranix/templates/unbound/google-domains.txt  )
+do
+         echo "local-zone: \"$i\" redirect" >> /etc/unbound/local.d/bad.conf;
+         echo "local-data: \"$i A 216.239.32.20\"" >> /etc/unbound/local.d/bad.conf;
+done
 /usr/bin/systemctl restart unbound
