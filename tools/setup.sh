@@ -52,5 +52,9 @@ sed -i "s/dns forwarder.*/dns forwarder = ${CRANIX_PROXY}/" /etc/samba/smb.conf
 /usr/bin/systemctl enable unbound
 /usr/bin/systemctl start  unbound
 
+#Add new apiAcl
+/usr/sbin/crx_api.sh PUT  system/enumerates/apiAcl/system.unbound
+/usr/sbin/crx_api.sh POST system/acls/groups/1 '{"acl":"system.unbound","allowed":true,"userId":null,"groupId":1}'
+
 #Restart samba
 /usr/bin/systemctl restart samba-ad
