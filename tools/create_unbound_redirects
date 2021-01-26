@@ -1,0 +1,44 @@
+#!/usr/bin/python
+# (C) 2021 Peter Varkoly <pvarkoly@cephalix.eu> Nürnberg, Germany All rights reserved
+#
+
+import os
+import re
+
+regex = re.compile('^[a-zA-Z0-9\.\-]+$')
+lists = os.popen('crx_api_text.sh GET system/configuration/UNBOUND_LISTS').read().split()
+proxy = os.popen('crx_api_text.sh GET system/configuration/PROXY').read()
+
+white = []
+
+with open('/var/lib/squidGuard/db/custom/good/domains') as f:
+    for line in f.readlines():
+        white.append(line.strip())
+
+with open('/var/lib/squidGuard/db/custom/cephalix/domains') as f:
+    for line in f.readlines():
+        white.append(line.strip())
+
+with open('/etc/unbound/local.d/bad.conf','w') as out:
+    for l in lists:
+        with open('/var/lib/squidGuard/db/BL/{0}/domains'.format(l.replace('-','/'))) as f:
+            for line in f.readlines():
+                lin = line.strip()
+                if regex.match(lin) and lin not in white:
+                    out.write("local-zone: \"{0}\" redirect\n".format(lin))
+                    out.write("local-data: \"{0} A {1}\"\n".format(lin,proxy))
+        with open('/var/lib/squidGuard/db/custom/bad/domains') as f:
+            for line in f.readlines():
+                lin = line.strip()
+                if regex.match(lin):
+                    out.write("local-zone: \"{0}\" redirect\n".format(lin))
+                    out.write("local-data: \"{0} A {1}\"\n".format(lin,proxy))
+        with open('/usr/share/cranix/templates/unbound/google-domains.txt') as f:
+            for line in f.readlines():
+                lin = line.strip()
+                if regex.match(lin):
+                    out.write("local-zone: \"{0}\" redirect\n".format(lin))
+                    out.write("local-data: \"{0} A 216.239.32.20\"\n".format(lin))
+
+os.system('/usr/bin/systemctl restart unbound')
+
