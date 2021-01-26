@@ -12,8 +12,8 @@ install:
 	mkdir -p $(SHARE)/{tools,templates}/unbound
 	install -m 755 tools/*      $(SHARE)/tools/unbound/
 	install -m 755 templates/*  $(SHARE)/templates/unbound/
-	mkidr   -p 755 $(DESTDIR)/etc/unbound/conf.d/
-	mv $(SHARE)/templates/unbound/logrotate  $(DESTDIR)/etc/unbound/conf.d/cranix-unbound.conf
+	mkidr   -p 755 $(DESTDIR)/etc/logrotate.d/
+	mv $(SHARE)/templates/unbound/logrotate  $(DESTDIR)/etc/logrotate.d/cranix-unbound.conf
 	mkdir   -p 750 $(DESTDIR)/var/log/unbound
 dist:
 	xterm -e git log --raw  &
