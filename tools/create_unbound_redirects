@@ -1,5 +1,5 @@
-#!/usr/bin/python
-# (C) 2021 Peter Varkoly <pvarkoly@cephalix.eu> Nürnberg, Germany All rights reserved
+#!/usr/bin/python3
+# (C) 2021 Peter Varkoly <pvarkoly@cephalix.eu> Nuremberg, Germany All rights reserved
 #
 
 import os

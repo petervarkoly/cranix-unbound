@@ -3,7 +3,7 @@
 
 rm -rf   /run/roomids
 mkdir -p /run/roomids
-echo '{"id":null,"accessType":"DEF","action":"","monday":true,"tuesday":true,"wednesday":true,"thursday":true,"friday":true,"saturday":false,"sunday":false,"holiday":false,"direct":true,"login":true,"portal":true,"printing":true,"proxy":false,"pointInTime":"06:00"}' > /tmp/defAcl
+echo '{"id":null,"accessType":"DEF","action":"","monday":true,"tuesday":true,"wednesday":true,"thursday":true,"friday":true,"saturday":false,"sunday":false,"holiday":false,"direct":true,"login":true,"portal":true,"printing":true,"proxy":true,"pointInTime":"06:00"}' > /tmp/defAcl
 for i in $( crx_api.sh GET rooms/accessList | jq -c  '.[] | select( .accessType == "DEF" and .roomId != 2 )' );
 do
         id=$( echo $i | jq .id )
