@@ -1,0 +1,15 @@
+[Unit]
+Description=CRANIX Firewall Watcher Service
+Wants=basic.target
+After=basic.target network.target syslog.target salt-master.service SuSEfirewall2.service
+PartOf=SuSEfirewall2.service
+
+[Service]
+Restart=on-failure
+ExecStartPre=/usr/share/cranix/tools/unbound/activate_loggining
+ExecStart=/usr/share/cranix/tools/unbound/read_fw_log.py
+ExecStopPost=/usr/share/cranix/tools/unbound/de_activate_loggining
+
+[Install]
+WantedBy=multi-user.target
+

@@ -10,8 +10,13 @@ PACKAGE		= cranix-unbound
 
 install:
 	mkdir -p $(SHARE)/{tools,templates}/unbound
+	mkdir -p $(DESTDIR)/usr/lib/systemd/system
+	mkdir -p $(DESTDIR)/etc/logrotate.d
 	install -m 755 tools/*      $(SHARE)/tools/unbound/
-	install -m 755 templates/*  $(SHARE)/templates/unbound/
+	install -m 644 templates/*  $(SHARE)/templates/unbound/
+	mv $(SHARE)/templates/unbound/crx_fw_log_watcher.service $(DESTDIR)/usr/lib/systemd/system/
+	mv $(SHARE)/templates/unbound/logrotate $(DESTDIR)/etc/logrotate.d/crx-fw-watcher
+
 dist:
 	xterm -e git log --raw  &
 	if [ -e $(PACKAGE) ] ;  then rm -rf $(PACKAGE) ; fi

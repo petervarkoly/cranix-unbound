@@ -1,0 +1,16 @@
+/var/log/cranix-internet-access.log {
+    compress
+    dateext
+    maxage 180
+    rotate 20
+    size=+4096k
+    notifempty
+    missingok
+    create 644 root root
+    sharedscripts
+    postrotate
+     systemctl reload crx_fw_log_watcher
+     sleep 60
+    endscript
+}
+
