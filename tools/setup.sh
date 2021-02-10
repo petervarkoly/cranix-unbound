@@ -13,16 +13,21 @@ if [ -z "${CRANIX_FORWARDER}" ]; then
 	echo "Can not evaluate an valid forwarder"
 	exit 0
 fi
-#Create unbound configuration
-sed    s/CRANIX_NETWORK/${CRANIX_NETWORK}/ /usr/share/cranix/templates/unbound/cranix.conf > /etc/unbound/conf.d/cranix.conf
-sed -i s/CRANIX_NETMASK/${CRANIX_NETMASK}/ /etc/unbound/conf.d/cranix.conf
-sed -i s/CRANIX_PROXY/${CRANIX_PROXY}/     /etc/unbound/conf.d/cranix.conf
-sed -i s/CRANIX_FORWARDER/${CRANIX_FORWARDER}/ /etc/unbound/conf.d/cranix.conf
-
-#Create apache2 configuration
-if [ ! -e /etc/ssl/servercerts/certs/proxy.${CRANIX_DOMAIN}.key.pem ]; then
-	/usr/share/cranix/tools/create_server_certificates.sh -N proxy
+if [ ! -e /etc/unbound/conf.d/cranix.conf ]; then
+	#Create unbound configuration
+	sed    s/CRANIX_NETWORK/${CRANIX_NETWORK}/ /usr/share/cranix/templates/unbound/cranix.conf > /etc/unbound/conf.d/cranix.conf
+	sed -i s/CRANIX_NETMASK/${CRANIX_NETMASK}/ /etc/unbound/conf.d/cranix.conf
+	sed -i s/CRANIX_PROXY/${CRANIX_PROXY}/     /etc/unbound/conf.d/cranix.conf
+	sed -i s/CRANIX_FORWARDER/${CRANIX_FORWARDER}/ /etc/unbound/conf.d/cranix.conf
 fi
+
+#Create certitifcate for proxy
+#By cephalix clients the certificates should come from CEPHALIX server
+if [ ! -e /etc/ssl/servercerts/certs/proxy.${CRANIX_DOMAIN}.key.pem -a ! -e /etc/apache2/vhosts.d/cephalix_include.conf ]; then
+        /usr/share/cranix/tools/create_server_certificates.sh -N proxy
+fi
+
+#Create apache2 configuration if proxy certificat does exist
 if [ -e /etc/ssl/servercerts/certs/proxy.${CRANIX_DOMAIN}.key.pem ]; then
 	sed    s/CRANIX_DOMAIN/${CRANIX_DOMAIN}/ /usr/share/cranix/templates/unbound/apache2.conf > /etc/apache2/vhosts.d/proxy.conf
 else
@@ -32,8 +37,11 @@ else
 	echo "The template is: /usr/share/cranix/templates/unbound/apache2.conf"
 	printf '\033[30m'
 fi
-mkdir /srv/www/proxy
-echo "<h1>Diese Seite ist gesperrt</h1>" > /srv/www/proxy/index.html
+
+if [ ! -e /srv/www/proxy/index.html ]; then
+	mkdir /srv/www/proxy
+	echo "<h1>Diese Seite ist gesperrt</h1>" > /srv/www/proxy/index.html
+fi
 
 #Enhance cranix configuration
 /usr/bin/fillup /etc/sysconfig/cranix /usr/share/cranix/templates/unbound/UNBOUND-SETTINGS /etc/sysconfig/cranix
@@ -64,13 +72,17 @@ sed -i /wpad-curl/d /usr/share/cranix/templates/dhcpd.conf
 #Set the proxy ip as forwarder in samba
 sed -i "s/dns forwarder.*/dns forwarder = ${CRANIX_PROXY}/" /etc/samba/smb.conf
 
-#Enable and start unbound
+#Enable and start unbound and firewall log watcher service
 /usr/bin/systemctl enable unbound
 /usr/bin/systemctl start  unbound
+/usr/bin/systemctl enable crx_fw_log_watcher.service
+/usr/bin/systemctl start  crx_fw_log_watcher.service
 
-#Add new apiAcl
-/usr/sbin/crx_api.sh PUT  system/enumerates/apiAcl/system.unbound
-/usr/sbin/crx_api.sh POST system/acls/groups/1 '{"acl":"system.unbound","allowed":true,"userId":null,"groupId":1}'
+if [ -z $( /usr/sbin/crx_api.sh GET system/enumerates/apiAcl | grep system.unbound ) ]; then
+	#Add new apiAcl
+	/usr/sbin/crx_api.sh PUT  system/enumerates/apiAcl/system.unbound
+	/usr/sbin/crx_api.sh POST system/acls/groups/1 '{"acl":"system.unbound","allowed":true,"userId":null,"groupId":1}'
+fi
 
 #Restart samba
 /usr/bin/systemctl restart samba-ad
