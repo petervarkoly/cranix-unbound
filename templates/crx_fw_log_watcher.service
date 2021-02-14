@@ -6,9 +6,9 @@ PartOf=SuSEfirewall2.service
 
 [Service]
 Restart=on-failure
-ExecStartPre=/usr/share/cranix/tools/unbound/activate_loggining
+ExecStartPre=/usr/share/cranix/tools/unbound/activate_logging
 ExecStart=/usr/share/cranix/tools/unbound/read_fw_log.py
-ExecStopPost=/usr/share/cranix/tools/unbound/de_activate_loggining
+ExecStopPost=/usr/share/cranix/tools/unbound/de_activate_logging
 
 [Install]
 WantedBy=multi-user.target

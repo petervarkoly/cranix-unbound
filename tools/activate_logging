@@ -5,5 +5,5 @@ source /etc/sysconfig/cranix || exit 1
 IFS=","
 for network in $( /usr/sbin/crx_api.sh GET system/enumerates/network | sed -e 's/\[//' -e 's/\]//' -e 's/"//g' )
 do
-	/usr/sbin/iptables -I FORWARD -s ${netowrk} -m limit --limit 10/minute  -p tcp -j LOG --log-prefix "NEW-CON "
+        /usr/sbin/iptables -I FORWARD -s ${network}  -m limit --limit 2/minute -j LOG --log-prefix "NEW-CON "
 done
