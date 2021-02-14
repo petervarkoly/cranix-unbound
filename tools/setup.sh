@@ -1,5 +1,5 @@
 #!/bin/bash
-# (c) 2020 Peter Varkoly <pvarkoly@cephalix.eu>
+# (c) 2021 Peter Varkoly <pvarkoly@cephalix.eu>
 
 if [ ! -e /etc/sysconfig/cranix ]; then
 	echo "It is not a CRANIX server"
@@ -86,3 +86,11 @@ fi
 
 #Restart samba
 /usr/bin/systemctl restart samba-ad
+
+. /etc/sysconfig/SuSEfirewall2
+if [ "$FW_CUSTOMRULES" != "/etc/sysconfig/scripts/SuSEfirewall2-custom" ]; then
+	sed -i 's#^FW_CUSTOMRULES=.*#FW_CUSTOMRULES="/etc/sysconfig/scripts/SuSEfirewall2-custom"#' /etc/sysconfig/SuSEfirewall2
+fi
+if [ -z "$( grep crx_fw_log_watcher.service /etc/sysconfig/scripts/SuSEfirewall2-custom )" ]; then
+	sed -i -E 's#(fw_custom_after_finished.*)#\1\n    /usr/bin/systemctl try-restart crx_fw_log_watcher.service#' /etc/sysconfig/scripts/SuSEfirewall2-custom
+fi
