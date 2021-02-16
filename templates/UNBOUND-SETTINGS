@@ -1,5 +1,5 @@
 
-## Type:        sting
+## Type:        string
 ## Default:     no
 # The proxy lists from which the domains have to be redirected by unbound.
 CRANIX_UNBOUND_LISTS="porn warez violence"
