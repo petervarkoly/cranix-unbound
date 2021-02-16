@@ -16,6 +16,7 @@ def get_logged_in_user(SRC):
     user=os.popen('/usr/sbin/crx_api_text.sh GET devices/loggedIn/{0}'.format(SRC)).read()
     users[SRC]['user'] = user
     users[SRC]['time'] = time.time()
+    return user
 
 LOG_FILE="/var/log/cranix-internet-access.log"
 with open(LOG_FILE,'a',1) as log:

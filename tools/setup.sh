@@ -13,6 +13,18 @@ if [ -z "${CRANIX_FORWARDER}" ]; then
 	echo "Can not evaluate an valid forwarder"
 	exit 0
 fi
+
+#Make backup from old stand
+mkdir -p /var/adm/cranix/befor-installed-unbound
+cp /etc/samba/smb.conf      /var/adm/cranix/befor-installed-unbound/
+cp /srv/www/admin/wpad.dat  /var/adm/cranix/befor-installed-unbound/
+cp /srv/www/admin/proxy.pac /var/adm/cranix/befor-installed-unbound/
+cp /etc/dhcpd.conf          /var/adm/cranix/befor-installed-unbound/
+cp /usr/share/cranix/templates/dhcpd.conf /var/adm/cranix/befor-installed-unbound/
+HOME="/root/"
+export HOME
+/usr/bin/mysqldump CRX AccessInRooms > /var/adm/cranix/befor-installed-unbound/CRX.AccessInRooms.sql
+
 if [ ! -e /etc/unbound/conf.d/cranix.conf ]; then
 	#Create unbound configuration
 	sed    s/CRANIX_NETWORK/${CRANIX_NETWORK}/ /usr/share/cranix/templates/unbound/cranix.conf > /etc/unbound/conf.d/cranix.conf
