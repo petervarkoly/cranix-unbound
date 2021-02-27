@@ -19,7 +19,8 @@ def get_logged_in_user(SRC):
     return user
 
 LOG_FILE="/var/log/cranix-internet-access.log"
-with open(LOG_FILE,'a',1) as log:
+os.umask(0)
+with open(os.open(LOG_FILE,os.O_CREAT | os.O_WRONLY, 0o600),'a',1) as log:
     journal = os.popen('/usr/bin/journalctl -o short-iso -f')
     while True:
         line = journal.readline()
