@@ -24,6 +24,8 @@ cp /usr/share/cranix/templates/dhcpd.conf /var/adm/cranix/befor-installed-unboun
 HOME="/root/"
 export HOME
 /usr/bin/mysqldump CRX AccessInRooms > /var/adm/cranix/befor-installed-unbound/CRX.AccessInRooms.sql
+/usr/bin/mysqldump CRX Acls          > /var/adm/cranix/befor-installed-unbound/CRX.Acls.sql
+echo 'delete from Acls where acl like "%proxy";' | mysql CRX
 
 if [ ! -e /etc/unbound/conf.d/cranix.conf ]; then
 	#Create unbound configuration
