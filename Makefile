@@ -4,7 +4,7 @@
 DESTDIR         = /
 SHARE           = $(DESTDIR)/usr/share/cranix/
 HERE            = $(shell pwd)
-REPO            = /data1/OSC/home:varkoly:CRANIX-4-2:leap15.2
+REPO            = /data1/OSC/home:pvarkoly:CRANIX
 TOPACKAGE       = Makefile tools templates
 PACKAGE		= cranix-unbound
 
