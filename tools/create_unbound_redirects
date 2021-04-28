@@ -27,18 +27,23 @@ with open('/etc/unbound/local.d/bad.conf','w') as out:
                 if regex.match(lin) and lin not in white:
                     out.write("local-zone: \"{0}\" redirect\n".format(lin))
                     out.write("local-data: \"{0} A {1}\"\n".format(lin,proxy))
-        with open('/var/lib/squidGuard/db/custom/bad/domains') as f:
-            for line in f.readlines():
-                lin = line.strip()
-                if regex.match(lin):
-                    out.write("local-zone: \"{0}\" redirect\n".format(lin))
-                    out.write("local-data: \"{0} A {1}\"\n".format(lin,proxy))
-        with open('/usr/share/cranix/templates/unbound/google-domains.txt') as f:
-            for line in f.readlines():
-                lin = line.strip()
-                if regex.match(lin):
-                    out.write("local-zone: \"{0}\" redirect\n".format(lin))
-                    out.write("local-data: \"{0} A 216.239.32.20\"\n".format(lin))
+    with open('/var/lib/squidGuard/db/custom/bad/domains') as f:
+        for line in f.readlines():
+            lin = line.strip()
+            if regex.match(lin):
+                out.write("local-zone: \"{0}\" redirect\n".format(lin))
+                out.write("local-data: \"{0} A {1}\"\n".format(lin,proxy))
+    #Handling google addressess for safe searching
+    out.write('local-zone: "www.google.com" redirect'+"\n")
+    out.write('local-data: "www.google.com A 216.239.32.20"'+"\n")
+    out.write('local-zone: "google.com" transparent'+"\n")
+    out.write('local-data: "google.com A 216.239.32.20"'+"\n")
+    with open('/usr/share/cranix/templates/unbound/google-domains.txt') as f:
+        for line in f.readlines():
+            lin = line.strip()
+            if regex.match(lin):
+                out.write("local-zone: \"{0}\" redirect\n".format(lin))
+                out.write("local-data: \"{0} A 216.239.32.20\"\n".format(lin))
 
 os.system('/usr/bin/systemctl restart unbound')
 
