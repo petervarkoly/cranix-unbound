@@ -4,10 +4,11 @@
 
 import os
 import re
+import cranixconfig
 
 regex = re.compile('^[a-zA-Z0-9\.\-]+$')
-lists = os.popen('crx_api_text.sh GET system/configuration/UNBOUND_LISTS').read().split()
-proxy = os.popen('crx_api_text.sh GET system/configuration/PROXY').read()
+lists = cranixconfig.CRANIX_UNBOUND_LISTS.split()
+proxy = cranixconfig.CRANIX_PROXY
 
 white = []
 
