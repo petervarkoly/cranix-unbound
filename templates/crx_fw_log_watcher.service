@@ -2,6 +2,7 @@
 Description=CRANIX Firewall Watcher Service
 Wants=basic.target
 After=basic.target network.target syslog.target salt-master.service SuSEfirewall2.service crx_set_default_status.service
+PartOf=crx_set_default_status.service
 
 [Service]
 Restart=on-failure
