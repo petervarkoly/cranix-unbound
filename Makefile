@@ -15,7 +15,7 @@ install:
 	mkdir -p $(DESTDIR)/etc/unbound/local.d/
 	install -m 755 tools/*      $(SHARE)/tools/unbound/
 	install -m 644 templates/*  $(SHARE)/templates/unbound/
-	install -m 644 local.d/*    $(SHARE)/etc/unbound/local.d/
+	install -m 644 local.d/*    $(DESTDIR)/etc/unbound/local.d/
 	mv $(SHARE)/templates/unbound/crx_fw_log_watcher.service $(DESTDIR)/usr/lib/systemd/system/
 	mv $(SHARE)/templates/unbound/logrotate $(DESTDIR)/etc/logrotate.d/crx-fw-watcher
 
