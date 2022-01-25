@@ -9,8 +9,7 @@
     create 644 root root
     sharedscripts
     postrotate
-     systemctl reload crx_fw_log_watcher
-     sleep 60
+     /usr/bin/systemctl restart crx_fw_log_watcher
     endscript
 }
 
