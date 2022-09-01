@@ -5,6 +5,7 @@
 import os
 import re
 import cranixconfig
+import socket
 
 regex = re.compile('^[a-zA-Z0-9\.\-]+$')
 lists = cranixconfig.CRANIX_UNBOUND_LISTS.split()
@@ -26,9 +27,12 @@ with open('/etc/unbound/local.d/bad.conf','w') as out:
             with open('/var/lib/squidGuard/db/BL/{0}/domains'.format(l.replace('-','/'))) as f:
                 for line in f.readlines():
                     lin = line.strip()
-                    if regex.match(lin) and lin not in white:
-                        out.write("local-zone: \"{0}\" redirect\n".format(lin))
-                        out.write("local-data: \"{0} A {1}\"\n".format(lin,proxy))
+                    try:
+                        socket.inet_aton(lin)
+                    except:
+                        if regex.match(lin) and lin not in white:
+                            out.write("local-zone: \"{0}\" redirect\n".format(lin))
+                            out.write("local-data: \"{0} A {1}\"\n".format(lin,proxy))
         except FileNotFoundError:
             next
 
