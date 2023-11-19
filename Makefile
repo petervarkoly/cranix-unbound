@@ -5,17 +5,15 @@ DESTDIR         = /
 SHARE           = $(DESTDIR)/usr/share/cranix/
 HERE            = $(shell pwd)
 REPO            = /data1/OSC/home:pvarkoly:CRANIX
-TOPACKAGE       = Makefile tools templates local.d
+TOPACKAGE       = Makefile tools templates
 PACKAGE		= cranix-unbound
 
 install:
 	mkdir -p $(SHARE)/{tools,templates}/unbound
 	mkdir -p $(DESTDIR)/usr/lib/systemd/system
 	mkdir -p $(DESTDIR)/etc/logrotate.d
-	mkdir -p $(DESTDIR)/etc/unbound/local.d/
-	install -m 755 tools/*      $(SHARE)/tools/unbound/
-	install -m 644 templates/*  $(SHARE)/templates/unbound/
-	install -m 644 local.d/*    $(DESTDIR)/etc/unbound/local.d/
+	install -m 755 tools/* $(SHARE)/tools/unbound/
+	rsync -a templates/    $(SHARE)/templates/unbound/
 	mv $(SHARE)/templates/unbound/crx_fw_log_watcher.service $(DESTDIR)/usr/lib/systemd/system/
 	mv $(SHARE)/templates/unbound/logrotate $(DESTDIR)/etc/logrotate.d/crx-fw-watcher
 
